@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.home.HomeScreen
 import com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.onboarding.OnBoardingScreen
 import com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.signin.SingInScreen
 import com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.splah.SplashScreen
@@ -32,7 +33,9 @@ fun NavGraph(navController: NavHostController) {
             })
         }
         composable(route = Screen.HomeScreen.route) {
-
+            HomeScreen(onNavigateToDetailScreen = {
+                navController.navigate(Screen.HomeScreen.route)
+            })
         }
         composable(route = Screen.DetailScreen.route) {}
 

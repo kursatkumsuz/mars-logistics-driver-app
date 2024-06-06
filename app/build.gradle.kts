@@ -69,6 +69,8 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
     kapt(libs.dagger.hilt.compiler)
+    //Horizontal Pager
+    implementation(libs.accompanist.pager)
 
     // Animated Message Bar
     implementation(libs.kursat.animated.message.bar)
@@ -86,7 +88,7 @@ dependencies {
     //Coroutines
     implementation(libs.coroutine.android)
     implementation(libs.coroutine.play.services)
-    
+
     //Retrofit
     implementation(libs.retrofit.converter)
     implementation(libs.retrofit)
