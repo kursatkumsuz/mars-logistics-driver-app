@@ -1,11 +1,9 @@
 package com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.home
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -28,7 +26,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
@@ -47,7 +44,6 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -55,28 +51,35 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.kursatkumsuz.marslojistiksurucuapp.R
+import com.kursatkumsuz.marslojistiksurucuapp.domain.model.DeliveryOrder
 import com.kursatkumsuz.marslojistiksurucuapp.presentation.components.home.TableRow
 import com.kursatkumsuz.marslojistiksurucuapp.presentation.components.home.Oval
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    onNavigateToDetailScreen: () -> Unit
+    onNavigateToDetailScreen: (Long) -> Unit
 ) {
+    val viewModel: HomeViewModel = hiltViewModel()
+    val state = viewModel.uiState
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF131313))
     ) {
+
         Spacer(modifier = Modifier.height(40.dp))
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
             Image(
@@ -97,7 +100,14 @@ fun HomeScreen(
                 fontSize = 16.sp
             )
         }
-        CategoryTabRow(onItemClick = {}, onNavigateToDetailScreen = onNavigateToDetailScreen)
+
+        state.dataList?.let {
+            CategoryTabRow(
+                data = it,
+                onNavigateToDetailScreen = onNavigateToDetailScreen
+            )
+        }
+
     }
 }
 
@@ -106,24 +116,16 @@ fun HomeScreen(
 @ExperimentalFoundationApi
 @Composable
 fun CategoryTabRow(
-    onItemClick: (Int) -> Unit, onNavigateToDetailScreen: () -> Unit
+    data: List<DeliveryOrder>,
+    onNavigateToDetailScreen: (Long) -> Unit
 ) {
 
-    val days = listOf(
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-    )
     val pagerState = rememberPagerState()
     val tabRowIndicator = @Composable { tabPositions: List<TabPosition> ->
         TabRowIndicator(tabPositions, pagerState)
     }
-    var selectedCategory by remember {
-        mutableStateOf("1th Day")
+    var selectedDate by remember {
+        mutableStateOf(data[0].date)
     }
 
     Box(
@@ -131,12 +133,15 @@ fun CategoryTabRow(
             .fillMaxSize()
             .background(Color(0xFF131313))
     ) {
-        ItemPager(
-            pagerState,
-            category = selectedCategory,
-            count = days.size,
-            onItemClick = { onNavigateToDetailScreen() },
-        )
+        selectedDate?.let {
+            ItemPager(
+                pagerState,
+                date = it,
+                count = data.size,
+                data = data,
+                onItemClick = onNavigateToDetailScreen,
+            )
+        }
         Oval()
         ScrollableTabRow(
             modifier = Modifier
@@ -150,9 +155,17 @@ fun CategoryTabRow(
                 Divider(color = Transparent)
             }
         ) {
-            days.fastForEachIndexed { index, names ->
-                TabItem(pagerState, index, names) { category ->
-                    selectedCategory = category
+            val indexedData = data.withIndex()
+            val groupedData = indexedData.groupBy { it.value.date }
+
+            groupedData.values.map { group ->
+                val firstItem = group.firstOrNull()
+                firstItem?.let { item ->
+                    item.value.date?.let {
+                        TabItem(pagerState = pagerState, index = item.index, date = it) {
+                            selectedDate = item.value.date
+                        }
+                    }
                 }
             }
         }
@@ -167,9 +180,13 @@ fun CategoryTabRow(
 fun TabItem(
     pagerState: PagerState,
     index: Int,
-    day: String,
-    onChangeCategory: (String) -> Unit
+    date: String,
+    onChangeDate: (String) -> Unit
 ) {
+
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val date = LocalDate.parse(date, dateFormatter)
+
     var isClick by remember {
         mutableStateOf(false)
     }
@@ -181,7 +198,7 @@ fun TabItem(
         if (isSelected) Black else White, label = ""
     )
     if (isSelected)
-        onChangeCategory(day)
+        onChangeDate(date.toString())
 
     Tab(
         modifier = Modifier.zIndex(1f),
@@ -205,15 +222,11 @@ fun TabItem(
                 ) {
 
 
-                    Row {
-                        Text(
-                            text = day, color = color, fontSize = 18.sp
-                        )
-                        Text(
-                            text = "th", color = color, fontSize = 14.sp
-                        )
-                    }
-                    Text(text = "Day", color = color, fontSize = 18.sp)
+                    Text(
+                        text = date.dayOfMonth.toString(), color = color, fontSize = 18.sp
+                    )
+
+                    Text(text = date.month.name.toLowerCase(), color = color, fontSize = 18.sp)
                 }
             }
         },
@@ -293,8 +306,9 @@ fun TabRowIndicator(tabPositions: List<TabPosition>, pagerState: PagerState) {
 fun ItemPager(
     pagerState: PagerState,
     count: Int,
-    category: String,
-    onItemClick: () -> Unit
+    data: List<DeliveryOrder>,
+    date: String,
+    onItemClick: (Long) -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp / 1.4
     HorizontalPager(
@@ -325,38 +339,19 @@ fun ItemPager(
                     },
                 contentAlignment = Alignment.TopCenter
             ) {
-                LessonList(onNavigateToDetailScreen = { onItemClick() })
+                val filteredData = data.filter { it -> it.date == date }
+                PositionList(dataList = filteredData, onNavigateToDetailScreen = onItemClick)
             }
         }
     }
 }
 
 @Composable
-fun LessonList(
-    onNavigateToDetailScreen: () -> Unit
+fun PositionList(
+    dataList: List<DeliveryOrder>,
+    onNavigateToDetailScreen: (Long) -> Unit
 ) {
 
-    val colors = listOf(
-        Color(0xFFEC4D4D),
-        Color(0xFFEC4DC6),
-        Color(0xFFE524DEC),
-        Color(0xFECC85CA),
-        Color(0xFE44B685),
-    )
-    val names = listOf(
-        "Adjectives",
-        "Adverbs",
-        "Nouns",
-        "Verbs",
-        "Conjunctions"
-    )
-    val progresses = listOf(
-        0.7f,
-        0.5f,
-        0.9f,
-        0.3f,
-        0.6f,
-    )
     LazyColumn {
         item {
             Spacer(modifier = Modifier.height(70.dp))
@@ -376,7 +371,7 @@ fun LessonList(
                         fontWeight = FontWeight.ExtraBold
                     )
                     Text(
-                        text = "2 Pozisyon bulundu.",
+                        text = "${dataList.size} Pozisyon bulundu.",
                         color = LightGray,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
@@ -385,11 +380,10 @@ fun LessonList(
                 TableRow()
             }
         }
-        items(names.size) { index ->
+        items(dataList.size) { index ->
             ListItem(
-                color = colors[index],
-                name = names[index],
-                progress = progresses[index],
+                index = index + 1,
+                data = dataList[index],
                 onNavigateToDetailScreen = onNavigateToDetailScreen
             )
             Spacer(modifier = Modifier.height(15.dp))
@@ -398,20 +392,15 @@ fun LessonList(
 }
 
 @Composable
-fun ListItem(color: Color, name: String, progress: Float, onNavigateToDetailScreen: () -> Unit) {
-
-    val lastProgress = remember {
-        Animatable(0f)
-    }
-
-    LaunchedEffect(key1 = Unit) {
-        lastProgress.animateTo(targetValue = progress, animationSpec = tween(1000))
-    }
-
+fun ListItem(
+    index: Int,
+    data: DeliveryOrder,
+    onNavigateToDetailScreen: (Long) -> Unit
+) {
     Box(
         modifier = Modifier
             .clickable {
-                onNavigateToDetailScreen()
+                data.orderNo?.let { onNavigateToDetailScreen(it) }
             }
             .padding(10.dp),
     ) {
@@ -422,7 +411,7 @@ fun ListItem(color: Color, name: String, progress: Float, onNavigateToDetailScre
                     .size(44.dp)
             ) {
                 Text(
-                    text = "1",
+                    text = index.toString(),
                     modifier = Modifier.align(Alignment.Center),
                     fontSize = 22.sp,
                     color = White,
@@ -430,19 +419,19 @@ fun ListItem(color: Color, name: String, progress: Float, onNavigateToDetailScre
                 )
             }
             Column(modifier = Modifier.padding(10.dp)) {
-                Text(text = "P2165465456152", fontWeight = FontWeight.SemiBold, fontSize = 20.sp)
+                Text(text = "P${data.orderNo}", fontWeight = FontWeight.SemiBold, fontSize = 20.sp)
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
-                    text = "Istanbul -> Ankara",
+                    text = "${data.departurePointName} -> ${data.arrivalPointName}",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
-                    text = "03.06.2022",
+                    text = data.date ?: "Bilinmeyen Tarih",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
-                    color = Color.LightGray
+                    color = LightGray
                 )
             }
             Box(modifier = Modifier.size(height = 40.dp, width = 90.dp))

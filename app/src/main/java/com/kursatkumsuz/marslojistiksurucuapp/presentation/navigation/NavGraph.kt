@@ -1,15 +1,16 @@
 package com.kursatkumsuz.marslojistiksurucuapp.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.detail.DetailScreen
 import com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.home.HomeScreen
 import com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.onboarding.OnBoardingScreen
 import com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.signin.SingInScreen
-import com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.splah.SplashScreen
+import com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.splash.SplashScreen
 import com.kursatkumsuz.marslojistiksurucuapp.util.Screen
 
 @Composable
@@ -33,11 +34,17 @@ fun NavGraph(navController: NavHostController) {
             })
         }
         composable(route = Screen.HomeScreen.route) {
-            HomeScreen(onNavigateToDetailScreen = {
-                navController.navigate(Screen.HomeScreen.route)
+            HomeScreen(onNavigateToDetailScreen = { orderNo ->
+                navController.navigate("${Screen.DetailScreen.route}/${orderNo}")
+
             })
         }
-        composable(route = Screen.DetailScreen.route) {}
+        composable(route = "${Screen.DetailScreen.route}/{orderNo}", arguments = listOf(
+            navArgument("orderNo") { type = NavType.LongType }
+        )) { backStackEntry ->
+            val orderNo = backStackEntry.arguments?.getLong("orderNo") ?: 0L
+            DetailScreen(orderNo = orderNo)
+        }
 
     }
 }
