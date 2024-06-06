@@ -2,16 +2,24 @@
 agp = "8.5.0-alpha03"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
-junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 lifecycleRuntimeKtx = "2.8.1"
 activityCompose = "1.9.0"
 composeBom = "2023.08.00"
+dagger-hilt = "2.48"
+hilt-navigation = "1.0.0-alpha03"
+retrofit = "2.9.0"
+coroutine = "1.6.4"
+lifecycle-scope = "2.4.0"
+navigation = "2.7.0"
+datastore = "1.0.0"
+firebase-auth = "21.0.3"
+animated-bar = "1.0.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
@@ -23,9 +31,32 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3"}
+
+
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger-hilt" }
+dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger-hilt" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation" }
+
+
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-converter = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+firebase-auth = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebase-auth" }
+coroutine-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutine" }
+coroutine-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutine" }
+lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle-scope" }
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle-scope" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+kursat-animated-message-bar = { module = "com.github.kursatkumsuz:animated-message-bar", version.ref = "animated-bar" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version = "2.48" }
+google-gms-google-services = { id = "com.google.gms.google-services", version = "4.3.14" }
+
+
 

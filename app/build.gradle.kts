@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.kapt)
+    alias(libs.plugins.google.dagger.hilt.android)
+    alias(libs.plugins.google.gms.google.services)
+
 }
 
 android {
@@ -59,11 +63,42 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
+    // Navigation
+    implementation(libs.navigation.compose)
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    kapt(libs.dagger.hilt.compiler)
+
+    // Animated Message Bar
+    implementation(libs.kursat.animated.message.bar)
+
+    //DataStore
+    implementation(libs.datastore.preferences)
+
+    //ViewModel
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.lifecycle.viewmodel)
+
+    // Firebase Auth
+    implementation(libs.firebase.auth)
+
+    //Coroutines
+    implementation(libs.coroutine.android)
+    implementation(libs.coroutine.play.services)
+    
+    //Retrofit
+    implementation(libs.retrofit.converter)
+    implementation(libs.retrofit)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+kapt {
+    correctErrorTypes = true
 }
