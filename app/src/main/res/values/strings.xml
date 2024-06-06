@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Mars Lojistik Sürücü Uygulaması</string>
+    <string name="button_start">Başla</string>
+    <string name="text_sign_in">Giriş</string>
+
+    //Onbording
+    <string name="onboarding_first_title">Lojistikte Güven, Hız ve Kalite</string>
+    <string name="onboarding_first_description">Her yük, her zaman, tam zamanında.</string>
+
+    <string name="onboarding_second_title">Taşımacılığın Güvencesi</string>
+    <string name="onboarding_second_description">Sorunsuz teslimatlar, memnun müşteriler.</string>
+
+    <string name="onboarding_third_title">Taşınma Zorluklarınıza Çözüm Ortağınız</string>
+    <string name="onboarding_third_description">İhtiyacınız olan güvenilir, hızlı ve sorunsuz lojistik çözümleri için buradayız.</string>
+
+
 </resources>
