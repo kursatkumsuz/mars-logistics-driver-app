@@ -1,6 +1,5 @@
-package com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.splah
+package com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.splash
 
-import android.window.SplashScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

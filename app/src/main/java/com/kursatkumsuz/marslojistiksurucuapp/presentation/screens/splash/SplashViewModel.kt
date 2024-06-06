@@ -1,4 +1,4 @@
-package com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.splah
+package com.kursatkumsuz.marslojistiksurucuapp.presentation.screens.splash
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
