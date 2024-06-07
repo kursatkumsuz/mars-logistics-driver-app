@@ -399,12 +399,13 @@ fun ListItem(
 ) {
     Box(
         modifier = Modifier
+            .fillMaxWidth()
             .clickable {
                 data.orderNo?.let { onNavigateToDetailScreen(it) }
             }
             .padding(10.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically){
             Box(
                 modifier = Modifier
                     .background(color = Black, shape = CircleShape)
@@ -434,7 +435,21 @@ fun ListItem(
                     color = LightGray
                 )
             }
-            Box(modifier = Modifier.size(height = 40.dp, width = 90.dp))
+
+        }
+        if (data.inTransit == true) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .size(height = 40.dp, width = 90.dp)
+                    .background(Color.Red, shape = RoundedCornerShape(16.dp))
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = "Yolda",
+                    color = White
+                )
+            }
         }
     }
 }
