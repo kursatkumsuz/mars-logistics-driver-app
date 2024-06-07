@@ -41,9 +41,8 @@ fun NavGraph(navController: NavHostController) {
         }
         composable(route = "${Screen.DetailScreen.route}/{orderNo}", arguments = listOf(
             navArgument("orderNo") { type = NavType.LongType }
-        )) { backStackEntry ->
-            val orderNo = backStackEntry.arguments?.getLong("orderNo") ?: 0L
-            DetailScreen(orderNo = orderNo)
+        )) {
+            DetailScreen()
         }
 
     }
